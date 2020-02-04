@@ -1,0 +1,74 @@
+# 5.Longest Palindromic Substring
+Difficulty: Medium
+Link: [https://leetcode-cn.com/problems/longest-palindromic-substring](https://leetcode-cn.com/problems/longest-palindromic-substring)
+## Description
+Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
+## Example 1
+``` 
+Input: "babad"
+Output: "bab"
+Note: "aba" is also a valid answer.
+```
+## Example 2
+```
+Input: "cbbd"
+Output: "bb"
+```
+## Analysis
+Palindrome string is a kind of string which will stay the same when it is read from front to back and back to front. In other words, it is on central symmetry.
+'Center Expansion Method': 
+1. Select one or two places as the centers of palindrome substring. 
+2. Expand the substring on both sides when the characters at both edges are the same.
+3. Record the centers and the expanded wing length when the length of palindrome substring reach the maximum.
+## Solution
+```
+class Solution {
+public:
+    string longestPalindrome(string s) {
+        int len = s.length();
+        int i, j;
+        int center_1, center_2, maxLen = 0, maxWing = 0;
+        int wing_1, wing_2;
+        if(!len) return "";
+        for(i = 0; i < len; i++)
+        {
+            wing_1 = wing_2 = 0;
+            wing_1 = expand(s, i, i);
+            if(2 * wing_1 + 1 > maxLen)
+            {
+                maxLen = 2 * wing_1 + 1;
+                center_1 = center_2 = i;
+                maxWing = wing_1;
+            }
+            if(s[i] == s[i + 1])
+            {
+                wing_2 = expand(s, i, i + 1);
+                if(2 * wing_2 + 2 > maxLen)
+                {
+                    maxLen = 2 * wing_2 + 2;
+                    center_1 = i;
+                    center_2 = i + 1;
+                    maxWing = wing_2;
+                }
+            }
+        }
+        return s.substr(center_1 - maxWing, maxLen);
+    }
+    int expand(string s, int center_1, int center_2)
+    {
+        int wing = 0;
+        int Ptr_L, Ptr_R;
+        Ptr_L = center_1 - 1;
+        Ptr_R = center_2 + 1;
+        while(Ptr_L >= 0 && Ptr_R < s.length())
+        {
+            if(s[Ptr_L] == s[Ptr_R])
+                wing++;
+            else break;
+            Ptr_L--;
+            Ptr_R++;
+        }
+        return wing;
+    }
+};
+```
